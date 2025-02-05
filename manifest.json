@@ -1,11 +1,11 @@
 {
   "files": {
-    "index.js": "7df214d54ff68860949b665a50f27499d46be168a68a0ba5e784012a9363c67f",
-    "module.json": "69ca0ef34dc9f6a9cffe75066fdc4609195a7aadc076314e69e18b96d7bd1602",
+    "index.js": "82767ea9429ac709f5e29152257330f1d840018a50d9ea13df05bab343381925",
+    "module.json": "3e1d577a480239074370ccda374b3085003f30a7347b05bc1f482f2f1c6d209f",
     "README.md": "1167ba129b75ab222b0f185feecd2f56dddda82f8ab4bf26ff67c790ae24e979",
     "data/favorites.json": {
         "overwrite": false,
-        "hash": "a8eb4897a563e31b18867da8bfa3dc617d059bb7ddb02e2bd0d5da83c47954bf"
+        "hash": "3110f8345dc4c5212b94d6a8286773b2e86ab817db53cf02ce7eede77c2c36ab"
     },
     "defs/C_ADD_INTER_PARTY_MATCH_POOL.2.def": "2ca996d756d9e735cef58d5eda82e9c9c9cc433caeb41f2ee38ba02936a86d9b"
   }

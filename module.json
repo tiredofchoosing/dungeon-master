@@ -2,7 +2,7 @@
     "name": "dungeon-master",
     "author": "tiredofchoosing",
     "description": "Save your favorite dungeons and request them for matchmaking anytime. Request random dungeon from favorites.",
-    "version": "0.1",
+    "version": "0.2",
     "options": {
         "cliName": "DungeonMaster",
         "guiName": "Dungeon Master"

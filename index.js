@@ -4,7 +4,7 @@ const path = require('path');
 module.exports = function DungeonMaster(mod) {
     let isRegistering = false
     let listName = 'default'
-    let isLeaderRequested = false
+    let isLeader = false
     let dungeons = { default: [] }
     let party = []
     const defaultRoles = {
@@ -36,19 +36,20 @@ module.exports = function DungeonMaster(mod) {
         $default: printHelp,
         $none: printHelp,
         help: printHelp,
-        add: registerDungeons, // add [listName] - add dungeons to the list
-        cancel: cancelRegisterDungeons, // cancel - cancel adding process
-        run: runDungeons, // run [listName] - run matchmaking for dungeons from the list
-        roll: rollDungeons, // roll [listName] [count] - run matchmaking for random dungeons from the list
-        roles: checkRoles, // roles - check assigned roles for party members
-        list: showLists, // show all lists
-        save: saveToFile, // save - save all lists to the file
-        load: loadFromFile // load - load all lists from the file
+        add: registerDungeons, // add [listName]
+        cancel: cancelRegisterDungeons, // cancel
+        run: runDungeons, // run [listName]
+        roll: rollDungeons, // roll [listName] [count]
+        roles: checkRoles, // roles
+        leader: setLeader, // leader <1|0>
+        list: showLists, // list
+        save: saveToFile, // save
+        load: loadFromFile // load
     })
 
     mod.hook('C_ADD_INTER_PARTY_MATCH_POOL', 2, event => {
         if (isRegistering && event.type === 0) {
-            isLeaderRequested = event.preferredLeader === 1
+            //isLeaderRequested = event.preferredLeader === 1
             dungeons[listName] = Array.from(event.instances, (inst) => inst.id)
             mod.command.message(`Dungeons added: ${dungeons[listName].length}.`)
             isRegistering = false
@@ -59,14 +60,15 @@ module.exports = function DungeonMaster(mod) {
 
     function printHelp() {
         mod.command.message(`Commands:
-<FONT COLOR="#FFFFFF">add [listName]</FONT> = Add dungeons in a list. You can specify the list name.
-<FONT COLOR="#FFFFFF">cancel</FONT> = Cancel registering.
-<FONT COLOR="#FFFFFF">run [listName]</FONT> = Run matchmaking for dungeons from the list.
-<FONT COLOR="#FFFFFF">roll [listName] [count]</FONT> = Run matchmaking for random dungeons from the list.
-<FONT COLOR="#FFFFFF">save</FONT> = Save all lists to the file.
-<FONT COLOR="#FFFFFF">load</FONT> = Load all lists from the file.
+<FONT COLOR="#FFFFFF">add [listName]</FONT> = Add dungeons to the list. You can specify the list name.
+<FONT COLOR="#FFFFFF">cancel</FONT> = Cancel recording.
+<FONT COLOR="#FFFFFF">run [listName]</FONT> = Start a matchmaking for dungeons from the list.
+<FONT COLOR="#FFFFFF">roll [listName] [count]</FONT> = Start a matchmaking for a random dungeon(s) from the list. You can specify the list name and/or dungeon count.
+<FONT COLOR="#FFFFFF">leader <1|0></FONT> = Set / unset you as a party leader.
+<FONT COLOR="#FFFFFF">save</FONT> = Save all lists.
+<FONT COLOR="#FFFFFF">load</FONT> = Load all lists.
 <FONT COLOR="#FFFFFF">list</FONT> = Show all lists.
-<FONT COLOR="#FFFFFF">roles</FONT> = Check assigned roles for party members.`)
+<FONT COLOR="#FFFFFF">roles</FONT> = Check the assigned roles for party members.`)
     }
 
     function registerDungeons(...args) {
@@ -110,7 +112,7 @@ module.exports = function DungeonMaster(mod) {
         let dgs = dungeons.default
         let count = 1
         if (args.length > 0) {
-            if (parseInt(args[0]) !== NaN) {
+            if (!isNaN(parseInt(args[0]))) {
                 count = parseInt(args[0])
 
                 if (args[1] != undefined) {
@@ -120,7 +122,7 @@ module.exports = function DungeonMaster(mod) {
             else {
                 dgs = dungeons[args[0]]
 
-                if (args[1] != undefined && parseInt(args[1]) !== NaN) {
+                if (args[1] != undefined && !isNaN(parseInt(args[1]))) {
                     count = parseInt(args[1])
                 }
             }
@@ -155,7 +157,7 @@ module.exports = function DungeonMaster(mod) {
         }
 
         const packet = {
-            preferredLeader: isLeaderRequested,
+            preferredLeader: isLeader,
             type: 0,
             instances: instances.map(d => ({id: d})),
             players: players
@@ -214,6 +216,17 @@ module.exports = function DungeonMaster(mod) {
 
         return result;
     }
+
+    function setLeader(state) {
+        if (state === '1') {
+            isLeader = true
+            mod.command.message('Party leader is enabled.')
+        }
+        else if (state === '0') {
+            isLeader = false
+            mod.command.message('Party leader is disabled.')
+        }
+    }
     
     function checkRoles() {
         let players = []
@@ -230,7 +243,7 @@ module.exports = function DungeonMaster(mod) {
                 party.forEach(p => players.push({ name: p.name, role: roles[i++] }))
             }
             else {
-                mod.command.message('Wrong party composition')
+                mod.command.message('Wrong party composition.')
                 return
             }
         }
@@ -239,11 +252,11 @@ module.exports = function DungeonMaster(mod) {
     }
 
     function showLists() {
-        mod.command.message('Lists: ', Object.keys(dungeons).map(k => `\n${k} - ${dungeons[k].length} dungeons`))
+        mod.command.message('Lists:\n', Object.keys(dungeons).map(k => `${k} - ${dungeons[k].length} dungeons.`).join('\n'))
     }
 
     function saveToFile() {
-        fs.writeFileSync(saveFilePath, JSON.stringify(dungeons), (err) => {
+        fs.writeFile(saveFilePath, JSON.stringify(dungeons), (err) => {
             if (err) {
                 mod.command.message('Could not save the file.', err)
             }
@@ -265,12 +278,14 @@ module.exports = function DungeonMaster(mod) {
             fs.readFile(saveFilePath, 'utf8', (err, data) => {
                 if (err) {
                     if (isUser) {
-                        mod.command.message('Could not load the file', err)
+                        mod.command.message('Could not load the file.', err)
                     }
                     return
                 }
                 dungeons = JSON.parse(data);
-                mod.command.message(`Loaded lists: ${Object.keys(dungeons).join(', ')}.`)
+                if (isUser) {
+                    mod.command.message(`Loaded lists: ${Object.keys(dungeons).join(', ')}.`)
+                }
             });
         })
     }
