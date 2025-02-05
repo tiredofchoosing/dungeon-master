@@ -2,6 +2,7 @@
   "files": {
     "index.js": "7df214d54ff68860949b665a50f27499d46be168a68a0ba5e784012a9363c67f",
     "module.json": "69ca0ef34dc9f6a9cffe75066fdc4609195a7aadc076314e69e18b96d7bd1602",
+    "README.md": "1167ba129b75ab222b0f185feecd2f56dddda82f8ab4bf26ff67c790ae24e979",
     "data/favorites.json": {
         "overwrite": false,
         "hash": "a8eb4897a563e31b18867da8bfa3dc617d059bb7ddb02e2bd0d5da83c47954bf"
