@@ -64,7 +64,7 @@ module.exports = function DungeonMaster(mod) {
 <FONT COLOR="#FFFFFF">cancel</FONT> = Cancel recording.
 <FONT COLOR="#FFFFFF">run [listName]</FONT> = Start a matchmaking for dungeons from the list.
 <FONT COLOR="#FFFFFF">roll [listName] [count]</FONT> = Start a matchmaking for a random dungeon(s) from the list. You can specify the list name and/or dungeon count.
-<FONT COLOR="#FFFFFF">leader <1|0></FONT> = Set / unset you as a party leader.
+<FONT COLOR="#FFFFFF">leader [1|0]</FONT> = Set / unset you as a party leader.
 <FONT COLOR="#FFFFFF">save</FONT> = Save all lists.
 <FONT COLOR="#FFFFFF">load</FONT> = Load all lists.
 <FONT COLOR="#FFFFFF">list</FONT> = Show all lists.
@@ -218,11 +218,11 @@ module.exports = function DungeonMaster(mod) {
     }
 
     function setLeader(state) {
-        if (state === '1') {
+        if (state === '1' || (state == undefined && !isLeader)) {
             isLeader = true
             mod.command.message('Party leader is enabled.')
         }
-        else if (state === '0') {
+        else if (state === '0' || (state == undefined && isLeader)) {
             isLeader = false
             mod.command.message('Party leader is disabled.')
         }
