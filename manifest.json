@@ -1,0 +1,11 @@
+{
+  "files": {
+    "index.js": "7df214d54ff68860949b665a50f27499d46be168a68a0ba5e784012a9363c67f",
+    "module.json": "69ca0ef34dc9f6a9cffe75066fdc4609195a7aadc076314e69e18b96d7bd1602",
+    "data/favorites.json": {
+        "overwrite": false,
+        "hash": "a8eb4897a563e31b18867da8bfa3dc617d059bb7ddb02e2bd0d5da83c47954bf"
+    },
+    "defs/C_ADD_INTER_PARTY_MATCH_POOL.2.def": "2ca996d756d9e735cef58d5eda82e9c9c9cc433caeb41f2ee38ba02936a86d9b"
+  }
+}
