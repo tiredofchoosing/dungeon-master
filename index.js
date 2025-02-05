@@ -76,10 +76,10 @@ module.exports = function DungeonMaster(mod) {
         if (!isRegistering || name !== listName) {
             isRegistering = true
             listName = name
-            mod.command.message('Registering started. Now request some dungeons you want to register.')
+            mod.command.message('Recording started. Open dungeons window, select dungeons you want to add, and start a matchmaking manually to finish the recording.')
         }
         else {
-            mod.command.message('Registering has already been started.')
+            mod.command.message('Recording has already been started.')
         }
     }
 
@@ -87,10 +87,10 @@ module.exports = function DungeonMaster(mod) {
         if (isRegistering) {
             isRegistering = false
             listName = 'default'
-            mod.command.message('Registering cancelled.')
+            mod.command.message('Recording cancelled.')
         }
         else {
-            mod.command.message('Registering has not been started yet.')
+            mod.command.message('Recording has not been started yet.')
         }
     }
 
@@ -252,13 +252,13 @@ module.exports = function DungeonMaster(mod) {
     }
 
     function showLists() {
-        mod.command.message('Lists:\n', Object.keys(dungeons).map(k => `${k} - ${dungeons[k].length} dungeons.`).join('\n'))
+        mod.command.message('Lists: ' + Object.keys(dungeons).map(k => `${k}(${dungeons[k].length})`).join(', '))
     }
 
     function saveToFile() {
         fs.writeFile(saveFilePath, JSON.stringify(dungeons), (err) => {
             if (err) {
-                mod.command.message('Could not save the file.', err)
+                mod.command.message('Could not save the file.' + err)
             }
             else {
                 mod.command.message('Successfully saved.')
@@ -270,7 +270,7 @@ module.exports = function DungeonMaster(mod) {
         fs.access(saveFilePath, fs.constants.F_OK | fs.constants.R_OK, (err) => {
             if (err) {
                 if (isUser) {
-                    mod.command.message('Could not load the file.', err)
+                    mod.command.message('Could not load the file.' + err)
                 }
                 return
             }
@@ -278,7 +278,7 @@ module.exports = function DungeonMaster(mod) {
             fs.readFile(saveFilePath, 'utf8', (err, data) => {
                 if (err) {
                     if (isUser) {
-                        mod.command.message('Could not load the file.', err)
+                        mod.command.message('Could not load the file.' + err)
                     }
                     return
                 }
